@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Coat of Caring</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c4907a;
+    --rose-light: #e8c4b4;
+    --rose-pale: #f5e8e0;
+    --charcoal: #2c2420;
+    --warm-mid: #7a5c52;
+    --cream: #fdf6ef;
+    --gold: #b89060;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--charcoal);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Atmospheric background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(180,120,90,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(196,144,122,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(44,36,32,0) 0%, rgba(20,14,10,0.6) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .snowfall {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .snowflake {
+    position: absolute;
+    top: -10px;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.7em;
+    animation: fall linear infinite;
+    user-select: none;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(105vh) translateX(var(--drift)); opacity: 0; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    width: 100%;
+    padding: 60px 40px 100px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeUp 1.4s ease both;
+  }
+
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.35em;
+    color: var(--rose);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0.85;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 500;
+    font-size: 2.4rem;
+    color: var(--rose-light);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--rose-light);
+    opacity: 0.6;
+    font-size: 1.1rem;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--rose), transparent);
+    margin: 28px auto 0;
+  }
+
+  /* Music player */
+  .player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(196,144,122,0.08);
+    border: 1px solid rgba(196,144,122,0.2);
+    border-radius: 60px;
+    padding: 10px 22px 10px 14px;
+    margin: 0 auto 52px;
+    width: fit-content;
+    animation: fadeUp 1.4s 0.3s ease both;
+    backdrop-filter: blur(6px);
+  }
+
+  .play-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--rose);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .play-btn:hover { background: var(--rose-light); transform: scale(1.08); }
+  .play-btn svg { width: 16px; height: 16px; }
+
+  .player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .player-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--rose-light);
+    opacity: 0.9;
+  }
+
+  .player-status {
+    font-size: 0.78rem;
+    color: var(--rose);
+    opacity: 0.7;
+    font-style: italic;
+  }
+
+  .waveform {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 24px;
+    margin-left: 8px;
+  }
+
+  .waveform span {
+    display: block;
+    width: 3px;
+    background: var(--rose);
+    border-radius: 2px;
+    opacity: 0.5;
+    transform-origin: bottom;
+  }
+
+  .waveform.playing span {
+    animation: wave 1s ease-in-out infinite;
+  }
+
+  .waveform span:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .waveform span:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+  .waveform span:nth-child(3) { height: 12px; animation-delay: 0.3s; }
+  .waveform span:nth-child(4) { height: 20px; animation-delay: 0.1s; }
+  .waveform span:nth-child(5) { height: 10px; animation-delay: 0.25s; }
+
+  @keyframes wave {
+    0%, 100% { transform: scaleY(0.5); opacity: 0.4; }
+    50% { transform: scaleY(1.4); opacity: 0.9; }
+  }
+
+  /* Volume */
+  .vol-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 4px;
+  }
+
+  .vol-icon { color: var(--rose); opacity: 0.6; font-size: 0.9rem; }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 70px;
+    height: 2px;
+    background: rgba(196,144,122,0.3);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--rose);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  /* Poem */
+  .poem {
+    font-weight: 300;
+    font-size: 1.18rem;
+    line-height: 2;
+    color: rgba(253,246,239,0.9);
+  }
+
+  .stanza {
+    margin-bottom: 36px;
+    animation: fadeUp 1.2s ease both;
+  }
+
+  .stanza:nth-child(1) { animation-delay: 0.5s; }
+  .stanza:nth-child(2) { animation-delay: 0.7s; }
+  .stanza:nth-child(3) { animation-delay: 0.9s; }
+  .stanza:nth-child(4) { animation-delay: 1.1s; }
+  .stanza:nth-child(5) { animation-delay: 1.3s; }
+  .stanza:nth-child(6) { animation-delay: 1.5s; }
+  .stanza:nth-child(7) { animation-delay: 1.7s; }
+
+  .chorus {
+    border-left: 2px solid var(--rose);
+    padding-left: 24px;
+    margin-left: 8px;
+    font-style: italic;
+    color: var(--rose-light);
+  }
+
+  .chorus-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+
+  .final-line {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--rose-light);
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-top: 48px;
+    opacity: 0.9;
+    animation: fadeUp 1.4s 2s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="snowfall" id="snowfall"></div>
+
+<div class="container">
+  <header>
+    <div class="eyebrow">A Poem</div>
+    <h1>A Coat of Caring</h1>
+    <p class="subtitle">A new song not yet sung</p>
+    <div class="divider"></div>
+  </header>
+
+  <!-- Music Player -->
+  <div class="player">
+    <button class="play-btn" id="playBtn" title="Play / Pause">
+      <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="player-info">
+      <div class="player-title">Background Melody</div>
+      <div class="player-status" id="statusText">Click to play</div>
+    </div>
+    <div class="waveform" id="waveform">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="vol-wrap">
+      <span class="vol-icon">♪</span>
+      <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.45">
+    </div>
+  </div>
+
+  <!-- Poem Body -->
+  <div class="poem">
+    <div class="stanza">
+      The air was cold and snow deep.<br>
+      Restless seekers came in to eat.<br>
+      The shelter opened at seven.<br>
+      For food and a warm place to meet.
+    </div>
+
+    <div class="stanza">
+      She entered with the crowd.<br>
+      Appearing just shy of despair,<br>
+      from falling on hard times,<br>
+      at the intersection of going nowhere.
+    </div>
+
+    <div class="stanza chorus">
+      <div class="chorus-label">Chorus</div>
+      She said she was weary and cold.<br>
+      Worn well beyond her years.<br>
+      Years of self doubt and tears.
+    </div>
+
+    <div class="stanza">
+      A volunteer came to say<br>
+      I can help with being cold.<br>
+      I have a coat with me today.<br>
+      My wife said give it away.
+    </div>
+
+    <div class="stanza">
+      The coat, a color of dusty rose,<br>
+      Impeccable in design<br>
+      Of finest wool composed,<br>
+      She said it's too fine for me.
+    </div>
+
+    <div class="stanza chorus">
+      <div class="chorus-label">Chorus</div>
+      She said she was weary and cold.<br>
+      Worn well beyond her years.<br>
+      Years of self doubt and tears.
+    </div>
+
+    <div class="stanza">
+      She took a chance, putting the coat on.<br>
+      Her darkness fell away to the floor.<br>
+      Enveloped in luxury, soft and warm.<br>
+      I've not had anything this fine before.
+    </div>
+
+    <div class="stanza">
+      It was a coat of caring, given in love,<br>
+      To lift her self image and self worth.<br>
+      It came as a message, from above.<br>
+      A chance to start over, a rebirth.
+    </div>
+
+    <div class="stanza">
+      It was a coat helping her to care.<br>
+      Care for herself in her time ahead.<br>
+      Lifting away the dark clouds of despair.<br>
+      It was a coat of caring.
+    </div>
+
+    <div class="final-line">— A coat of caring —</div>
+  </div>
+</div>
+
+<script>
+// ── Snowfall ──────────────────────────────────────────────────────────────
+const sf = document.getElementById('snowfall');
+for (let i = 0; i < 40; i++) {
+  const s = document.createElement('div');
+  s.className = 'snowflake';
+  s.textContent = '❄';
+  const left = Math.random() * 100;
+  const dur  = 8 + Math.random() * 14;
+  const delay= Math.random() * 12;
+  const drift= (Math.random() - 0.5) * 120 + 'px';
+  s.style.cssText = `left:${left}%;animation-duration:${dur}s;animation-delay:-${delay}s;--drift:${drift};font-size:${0.4+Math.random()*0.9}em`;
+  sf.appendChild(s);
+}
+
+// ── Audio Engine ──────────────────────────────────────────────────────────
+let ctx, masterGain, reverbNode, dryBus, wetBus;
+let isPlaying = false, scheduledNodes = [], loopTimeout;
+let volValue = 0.5;
+
+document.getElementById('volSlider').addEventListener('input', e => {
+  volValue = parseFloat(e.target.value);
+  if (masterGain) masterGain.gain.setTargetAtTime(volValue, ctx.currentTime, 0.05);
+});
+
+// Long cathedral reverb
+function buildReverb() {
+  const conv = ctx.createConvolver();
+  const sr = ctx.sampleRate, len = sr * 5;
+  const buf = ctx.createBuffer(2, len, sr);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < len; i++)
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.6);
+  }
+  conv.buffer = buf;
+  return conv;
+}
+
+// Piano-like tone: fundamental + harmonics with quick decay
+function piano(freq, t, dur, vol = 0.13) {
+  const harmonics = [1, 2, 3, 4, 6];
+  const vols      = [1, 0.5, 0.25, 0.12, 0.06];
+  harmonics.forEach((h, idx) => {
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq * h;
+    // slight pitch wobble on upper harmonics for warmth
+    if (h > 1) osc.detune.value = (Math.random() - 0.5) * 4;
+    const v = vol * vols[idx];
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(v, t + 0.012);
+    // piano decay: fast drop then long tail
+    gain.gain.setTargetAtTime(v * 0.35, t + 0.012, 0.18);
+    gain.gain.setTargetAtTime(0, t + dur * 0.55, dur * 0.55);
+    osc.connect(gain); gain.connect(dryBus); gain.connect(wetBus);
+    osc.start(t); osc.stop(t + dur + 1.5);
+    scheduledNodes.push(osc, gain);
+  });
+}
+
+// Soft string/pad tone
+function pad(freq, t, dur, vol = 0.045) {
+  [1, 1.5, 2].forEach((h, i) => {
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = i === 0 ? 'sine' : 'triangle';
+    osc.frequency.value = freq * h;
+    osc.detune.value = (Math.random() - 0.5) * 10;
+    const v = vol / (i + 1);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(v, t + 1.8);
+    gain.gain.setTargetAtTime(0, t + dur - 2, 1.4);
+    osc.connect(gain); gain.connect(wetBus);
+    osc.start(t); osc.stop(t + dur + 3);
+    scheduledNodes.push(osc, gain);
+  });
+}
+
+// ── Note frequencies (C major / relative minor) ───────────────────────────
+// Key of C major for naturalness
+const n = {
+  C3:130.8, D3:146.8, E3:164.8, F3:174.6, G3:196, A3:220, B3:246.9,
+  C4:261.6, D4:293.7, E4:329.6, F4:349.2, G4:392, A4:440, B4:493.9,
+  C5:523.3, D5:587.3, E5:659.3, F5:698.5, G5:784, A5:880,
+  Am3:220, // alias
+};
+
+// ── Composition ───────────────────────────────────────────────────────────
+// 4/4 feel, beat = 1.8s → bar = 7.2s
+const B = 1.8; // one beat in seconds
+
+function scheduleMusic(startAt) {
+  const t = startAt;
+
+  // ── PAD CHORDS (sustained strings underneath) ─────────────────────────
+  // 8-bar progression repeated: C – Am – F – G
+  const padChords = [
+    // bar 1-2  C major
+    [n.C3, n.E3, n.G3, n.C4],
+    // bar 3-4  A minor
+    [n.A3, n.C4, n.E4, n.A4],
+    // bar 5-6  F major
+    [n.F3, n.A3, n.C4, n.F4],
+    // bar 7-8  G major
+    [n.G3, n.B3, n.D4, n.G4],
+  ];
+  // 3 full cycles = 96 beats = 172.8s
+  for (let cycle = 0; cycle < 3; cycle++) {
+    padChords.forEach((chord, i) => {
+      const ct = t + (cycle * 32 + i * 8) * B;
+      chord.forEach(f => pad(f, ct, 8 * B, 0.038));
+    });
+  }
+
+  // ── BASS (deep, slow, anchoring) ──────────────────────────────────────
+  const bassLine = [
+    [n.C3, 0],  [n.C3, 4],
+    [n.A3*0.5, 8], [n.A3*0.5, 12],
+    [n.F3*0.5, 16],[n.F3*0.5, 20],
+    [n.G3*0.5, 24],[n.G3*0.5, 28],
+  ];
+  for (let cycle = 0; cycle < 3; cycle++) {
+    bassLine.forEach(([f, beat]) => {
+      piano(f, t + (cycle * 32 + beat) * B, 3.5 * B, 0.10);
+    });
+  }
+
+  // ── ARPEGGIOS (right-hand broken chords, gentle motion) ───────────────
+  // Pattern per bar: root, 5th, 3rd, octave (harp-like)
+  const arpPatterns = [
+    // C bar (2 bars)
+    [n.C4,n.G4,n.E4,n.C5, n.E4,n.G4,n.C5,n.E5],
+    // Am bar
+    [n.A4,n.E4,n.C5,n.A4, n.C5,n.E5,n.A4,n.C5],
+    // F bar
+    [n.F4,n.C5,n.A4,n.F5, n.A4,n.C5,n.F4,n.A4],
+    // G bar
+    [n.G4,n.D5,n.B4,n.G5, n.B4,n.D5,n.G4,n.B4],
+  ];
+  for (let cycle = 0; cycle < 3; cycle++) {
+    arpPatterns.forEach((notes, ci) => {
+      notes.forEach((f, ni) => {
+        const at = t + (cycle * 32 + ci * 8 + ni) * B;
+        piano(f, at, 1.6 * B, 0.055);
+      });
+    });
+  }
+
+  // ── SINGING MELODY (the emotional heart) ─────────────────────────────
+  // 32-beat melody over one 8-bar progression
+  // Each entry: [freq, beat_offset, duration_beats]
+  const melody = [
+    // Phrase A – gentle opening (over C)
+    [n.E5, 0,   1.4], [n.D5, 1.5, 0.8], [n.C5, 2.5, 1.8],
+    [n.E5, 4.5, 1.0], [n.G5, 5.6, 0.7], [n.E5, 6.5, 1.4],
+
+    // Phrase B – yearning rise (over Am)
+    [n.A4, 8.2, 1.0], [n.C5, 9.4, 0.9], [n.E5, 10.5,1.2],
+    [n.D5, 12.0,1.5], [n.C5, 13.7,0.8], [n.A4, 14.7,1.2],
+
+    // Phrase C – tender warmth (over F)
+    [n.F4, 16.1,0.8], [n.A4, 17.0,1.2], [n.C5, 18.4,1.6],
+    [n.D5, 20.2,0.9], [n.C5, 21.3,1.0], [n.A4, 22.5,1.4],
+
+    // Phrase D – resolving home (over G → C)
+    [n.B4, 24.2,1.0], [n.D5, 25.4,1.2], [n.G4, 26.8,0.8],
+    [n.A4, 28.0,1.4], [n.G4, 29.6,0.9], [n.E4, 30.7,0.8],
+    [n.C5, 31.8,3.2],  // long resolve
+  ];
+
+  // Play melody 3 times with slight variation in volume
+  [0, 32, 64].forEach((offset, pass) => {
+    const v = pass === 1 ? 0.16 : 0.12; // middle pass slightly louder
+    melody.forEach(([f, beat, db]) => {
+      piano(f, t + (offset + beat) * B, db * B * 0.88, v);
+    });
+  });
+
+  // ── COUNTER-MELODY (fills gaps, like a second voice) ──────────────────
+  const counter = [
+    [n.G4, 1.8, 0.9], [n.A4, 3.1, 0.7],
+    [n.F4, 9.5, 1.1], [n.G4, 11.0,0.8],
+    [n.C5, 17.8,0.9], [n.B4, 19.2,0.8],
+    [n.F4, 25.5,0.8], [n.E4, 27.2,1.0],
+  ];
+  [0, 32, 64].forEach(offset => {
+    counter.forEach(([f, beat, db]) => {
+      piano(f, t + (offset + beat) * B, db * B, 0.07);
+    });
+  });
+
+  return 96 * B; // total duration ~172s
+}
+
+function startMusicLoop() {
+  const duration = scheduleMusic(ctx.currentTime + 0.15);
+  loopTimeout = setTimeout(() => {
+    if (isPlaying) startMusicLoop();
+  }, (duration - 5) * 1000);
+}
+
+function stopMusic() {
+  clearTimeout(loopTimeout);
+  scheduledNodes.forEach(n => { try { n.disconnect(); n.stop && n.stop(); } catch(e){} });
+  scheduledNodes = [];
+}
+
+async function initAudio() {
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  masterGain = ctx.createGain();
+  masterGain.gain.value = 0;
+
+  // Routing: dryBus → masterGain, wetBus → reverb → masterGain
+  dryBus = ctx.createGain(); dryBus.gain.value = 0.6;
+  wetBus = ctx.createGain(); wetBus.gain.value = 1.0;
+  reverbNode = buildReverb();
+  const reverbGain = ctx.createGain(); reverbGain.gain.value = 0.42;
+
+  dryBus.connect(masterGain);
+  wetBus.connect(reverbNode);
+  reverbNode.connect(reverbGain);
+  reverbGain.connect(masterGain);
+  masterGain.connect(ctx.destination);
+}
+
+const playBtn    = document.getElementById('playBtn');
+const playIcon   = document.getElementById('playIcon');
+const statusText = document.getElementById('statusText');
+const waveformEl = document.getElementById('waveform');
+
+playBtn.addEventListener('click', async () => {
+  if (!ctx) await initAudio();
+  if (ctx.state === 'suspended') await ctx.resume();
+
+  if (!isPlaying) {
+    isPlaying = true;
+    masterGain.gain.setTargetAtTime(volValue, ctx.currentTime, 1.2);
+    startMusicLoop();
+    playIcon.innerHTML = '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>';
+    statusText.textContent = 'Now playing…';
+    waveformEl.classList.add('playing');
+  } else {
+    isPlaying = false;
+    masterGain.gain.setTargetAtTime(0, ctx.currentTime, 0.8);
+    setTimeout(stopMusic, 3000);
+    playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    statusText.textContent = 'Paused';
+    waveformEl.classList.remove('playing');
+  }
+});
+</script>
+</body>
+</html>
